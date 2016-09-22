@@ -1,0 +1,4 @@
+#!/bin/bash
+find /usr -type f -executable -perm -4000 -ls
+
+find /usr -type f -executable -perm -2000 -ls

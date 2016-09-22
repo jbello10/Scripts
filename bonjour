@@ -1,0 +1,8 @@
+#!/bin/bash
+echo "Bonjour"
+echo "ok"
+echo "Adios"
+
+echo "can you see this?"
+
+echo "testing backup"

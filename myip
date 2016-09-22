@@ -1,0 +1,6 @@
+#!/bin/bash
+# display my public IP address retrieved from icanhazip.com
+
+echo "Your IP is "`wget -qO - icanhazip.com`
+
+#curl icanhazip.com by default does it quietly instead of using -qO
