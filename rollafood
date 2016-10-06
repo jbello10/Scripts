@@ -1,0 +1,12 @@
+#!/bin/bash
+# create an arrary containing 11 different combinations for food
+foods=(apple bananas pizza wings beer steak sandwich "pop tart" chicken ribs dirt)
+die1=$((1+ $RANDOM %6))
+die2=$((1+ $RANDOM %6))
+
+diceTotal=$((die1 + die2))
+
+#dont put $ before because it subsitutaion happens before the comand gets run. $foodIndex was looking for foodIndex which did not exist
+foodIndex=$((diceTotal - 2))
+
+echo "Yum, I rolled $diceTotal which gives me ${foods[$foodIndex]}!"
