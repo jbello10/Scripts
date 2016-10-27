@@ -1,0 +1,67 @@
+#!/bin/bash
+
+###this script waits for a user to input a number a secounds
+##to count down from. any interuption in the count down
+# will cause the timer to start all over again.
+declare -i countDownNum=0
+declare -i countDownNum2
+declare -i attempts=0
+
+
+#countDownNum2=countDownNum
+#count=$countDownNum
+#$countDownNum2=countDownNum2
+
+
+trap myTrap INT
+
+
+
+function myTrap {
+
+  echo "D-Did you just try to CTRL+C? no grasshopper..now we start again....FROM THE TOP "
+  timer2
+  exit
+}
+
+function timer2 {
+  #statements
+while [[ countDownNum > 1 && countDownNum -gt 0 ]]; do
+  #statements
+  echo "$countDownNum"
+  sleep 1;
+  (( countDownNum -- ))
+done
+echo "Thank you for playing"
+
+
+}
+
+function timer {
+  #statements
+  while [[ countDownNum2 > 1 && countDownNum2 -gt 0 ]]; do
+    #statements
+    echo "$countDownNum2"
+    sleep 1;
+    (( countDownNum2 -- ))
+  done
+  echo "Thank you for playing"
+  echo "$countDownNum"
+}
+
+#******************* Until input is greater then 0 and an integer user will be forced to stay in this loop **********************
+until [[ $countDownNum -gt 0 ]]; do
+  #statements
+read -p "Please set Count-down timer: " countDownNum
+
+countDownNum2=countDownNum
+  #statements
+
+done
+#********************************************************************************************************************************
+
+if [[ $countDownNum2 -gt 0 ]]; then
+  #statements
+  echo "The Count-down will begin from $countDownNum2: "
+fi
+ timer
