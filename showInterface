@@ -1,0 +1,93 @@
+#!/bin/bash
+#### About this Script ######
+#############################
+#This Scrip asks a User for input on a valid interface on the machine
+#if the interface is vaild it will display a message confirming
+#if the interface does not exsist the user will receive an error-message
+# the user may also receive more information on their interface typing in -r or --route on the command line
+###########################################################################################################
+
+
+#this line searched the interfaces from `ifconfig`
+interfacenames=(`ifconfig |grep '^[a-zA-Z]'|awk '{print $1}'`)
+
+gatewayip=`route -n|grep '^0.0.0.0 '|awk '{print $2}'`
+
+declare -a ips
+ips[0]=`ifconfig ${interfacenames[0]} | grep 'inet addr' |
+                                     sed -e 's/  *inet addr://'| sed -e 's/ .*//'`
+
+
+#********* Functions **************************
+function howTo {
+  echo "HowTo: hit [ENTER] then Type valid [networkInterface]"
+  echo "For more info on the interface simple type [-r] or [--route]"
+
+}
+
+function error {
+  #statements
+  echo "ya that aint gonna fly McFly, trying looking at the -h help option"
+}
+#*********** End of Functions **************************************
+
+
+
+#this case statement reads input options from the user on the command line
+#if nothing is selected the case is skipped and goes straight into the program
+#if a -h or --help is selected the howTo function runs explaining to the user how to run the program
+#if -r or --route is given as an option then the an if statement comparing the string from the input to the interface variable runs. if the strings match a succesful message is displayed
+
+#if command line option is blank then ignore if the input is greater then 0 or true/there is input then compare it to any of the options in the case
+while [ $# -gt 0 ]; do
+  case $1 in
+    -h| --help )
+
+          howTo
+          exit 0
+          ;;
+
+    -r| --route )
+
+            #this will compare read -p searchInter RESULT with $interfacenames.
+            read -p "Hello, Which interface do you want more information on? " searchInter
+
+              #compares the string from read (searchInter) to $interfacenames if a string from interfacenames matches then routing information is displayed
+              if [[ $searchInter == $interfacenames* ]]; then
+                  echo -e "Interface ""\e[1;33m$interfacenames\e[0m"" was found" "it has an address of ${ips[0]} and a gateway of $gatewayip"
+              else
+                  echo "Sorry, $searchInter is not a valid interface"
+              fi
+            exit 1
+            ;;
+
+      * )
+            error
+            howTo
+            exit 1
+            ;;
+
+  esac
+done
+
+
+until [[ $searchInter  = *[!\ ]* ]]; do
+  read -p "Hello, Which interface do you want more information on? " searchInter
+done
+
+
+
+
+if [[ $searchInter == $interfacenames* ]]; then
+  #statements
+  echo -e "Interface ""\e[1;33m$interfacenames\e[0m"" was found" #"  has address ${ips[0]}"
+#  if [[ $2=intRout ]]; then
+#    echo -e "Interface ""\e[1;33m$interfacenames\e[0m"" was found with an IP of `ifconfig ${interfacenames[0]} | grep 'inet addr' | sed -e 's/  *inet addr://'| sed -e 's/ .*//'`"
+#  fi
+#elif [[ condition ]]; then
+  #statements
+else
+  echo -e "Sorry" "\e[1;31m$searchInter\e[0m" "was not found \nPlease insure you type the interface correctly"
+  echo -e "for assistance please try inserting a space then" "\e[1;31m--help OR -h\e[0m" "after ./newShoInterface"
+
+fi

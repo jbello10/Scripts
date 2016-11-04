@@ -1,0 +1,88 @@
+#!/bin/bash
+declare -i countDownNum
+declare -i countDownNum2
+
+
+
+
+#Traps these are used for catching interuptions and replaceing them with messages
+trap 'echo "k BYE"; exit 0' 3
+trap 'echo "be patien";' INT
+# trap 'echo "no no cant ctrl+c"; exit 1' 2
+#trap 'echo "be patient young one"' INT
+
+#### declare my function as a TRAP #####
+trap myTrap INT
+
+
+### This function will reset the counter if it is interupted the following trap message displaying
+## basically to run this script I needed 2 variable one for the first counter that would be counting down
+#then the 2nd variable would start from the first number. because the first variable has already started counting down you dont want to start from where it left off you want to start from the top
+function myTrap {
+	#statements
+	echo " ...no CTRL+C won't help you here. be patient young one "
+	countDownNum2=$(($countDownNum+1))
+}
+
+function howTo {
+	#statements
+	echo "Please enter a valid number to cound down from [#]"
+}
+
+
+
+
+#case statement for -h pr --help
+while [ $# -gt 0 ]; do
+  case $1 in
+    -h| --help )
+    howTo
+    exit 0
+			esac
+	done
+
+#until the input to count down is greater then 0 the user will keep looping
+until [[ $countDownNum -gt 0 ]]; do
+	  #statements
+	read -p "Please set Count-down timer: " countDownNum
+
+
+countDownNum2=$(($countDownNum))
+
+
+			while [[ $countDownNum2 -ne 0 ]]; do
+						#statements
+								echo "$countDownNum2"
+								sleep 1 & wait;
+								(( countDownNum2 -- ))
+
+			done
+done
+echo "Thanks for playin!, y'all come back now ya hear!"
+
+
+#while [[ $countDownNum2 -ne 0 ]];
+#do
+	#**************************************************************************
+
+	#	echo "$countDownNum2"
+	#	sleep 1 & wait;
+	#	(( countDownNum2 -- ))
+	#	function myTrap {
+	#		#statements
+	#		echo "be patient young one"
+
+	#		if [[ $?=0 ]]; then
+				#statements
+	#			until [[ $countDownNum -eq 0 ]]; do
+					#statements
+	#			echo "$countDownNum"
+	#			sleep 1 & wait;
+	#			(( countDownNum -- ))
+	#			done
+	#		fi
+	#		exit
+	#	}
+
+
+#done

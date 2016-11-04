@@ -1,0 +1,95 @@
+#!/bin/bash
+
+# display how many regular files there are in the Pictures directory
+# and how much disk space they use. It should also show the sizes
+# and names of the 3 largest files
+
+### Variables
+## These are default variables if the user does not input anything ##
+directory=~/Pictures
+numberOfFilesToShow=3
+
+
+### Functions
+function HowTo {
+    echo -e "TO USE: $0\nYour Options are:\n[-h|--help] [-c|--count numberOfFilesToDisplay] [directoryToWorkOn]"
+    echo "Count defaults to 3, Directory defaults to ~/Pictures" #See variables to change default
+
+}
+
+function error-message {
+#$@ is used to display the error desired from the error message in the else statment see line 55
+    echo "$@" >&2
+}
+
+### Command Line Processing
+## this information dependning which argument it is in get checked with the conditions to see if it is true
+## if it is true  the statements proceed.
+## if they are not true an error message is provided with help on how to run the programs
+directoryInput=no
+while [ $# -gt 0 ]; do
+    case "$1" in
+    #if -h or --help is inserted on the command line the follwing will happen
+    -h | --help )
+        HowTo
+        exit 0
+        ;;
+
+# specify how many big files to display
+#depedning on the valid number here will be fed down to the variable in main to display the number or files desired by the user
+    -c | --count )
+        if [[ $2 =~ ^[1-9][0-9]*$ ]]; then
+            numberOfFilesToShow=$2
+            shift
+        else
+            error-message "Count requires a nummber not $2"
+            echo "for help try the -h or --help option on the command line"
+            exit 1
+        fi
+        ;;
+
+    # grab the directory name to work on
+    * )
+    # if we haven't got a directory from the command line yet, this must be it
+        if [ -d "$1" ]; then
+            directory=$1
+            #directoryInput="yes"
+
+
+    # otherwise this is some kind of command line garbage
+        else
+            HowTo
+            error-message "I didn't understand '$1' as a directory, please insure you are typing it in correctly"
+            exit 1
+        fi
+        ;;
+    esac
+    shift
+done
+
+### Main Program this is what runs after information is inserted into the command line
+
+#read -p "Which directory do you want to search? " dirSearch
+
+#if [[ $dirSearch ]]; then
+  #statements
+#fi
+
+  #statements
+
+echo -n "In the $directory directory, the number of files is "
+find $directory -type f |wc -l
+#tried to pull only pictures with an extension of JPG but not all pictures are JPG some are PNG ect..
+#find ~/ -name '*.jpg'
+#find ~/ -type f -name '*.jpg' -o '*.png'
+
+
+echo "============================================================"
+echo -n "Those files use "
+du -sh $directory |awk '{print $1}'
+echo "============================================================"
+
+
+echo "The $numberOfFilesToShow largest files are:"
+echo "========================"
+du -h $directory/* |sort -h |tail -$numberOfFilesToShow

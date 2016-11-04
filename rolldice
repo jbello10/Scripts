@@ -1,0 +1,128 @@
+#!/bin/bash
+# this script prompts the user for a count of dice and then rolls them
+
+##Variables
+declare -i count=0 #number of dice to roll
+#or
+declare -i sides
+sides=0 #number of sides on the die, must be between 4 and 20 inclusive
+
+### Functions
+function error-message {
+  echo "$@" >&2
+  #statements
+}
+
+function help {
+  #statements
+  echo "How to: please follow the exact rules for running this script $0 [-h] [-c numberofdice] [-s numberofsidesperdie(4-20)]"
+}
+##### command line processing
+while [ $# -gt 0 ];do
+  #$# reads the count from the command line
+  case "$1" in
+
+    -h )
+    help
+    exit 0
+    ;;
+    -c )
+    if [[ "$2" =~ ^[1-9][0-9]*$ ]]; then
+      count=$2
+      shift
+      #^ consumed so you need to knock off the result go back tothe loop
+    else
+      error-message "you gave me '$2' as a number of dice roll, bad plan broChacho"
+      #send so standard error
+      exit 1
+      #exit with non zero message
+    fi
+    ;;
+    -s )
+    if [[ "$2" =~ ^[1-9][0-9]*$ ]]; then
+      if [ $2 -lt 4 -o $2 -gt 20 ]; then
+    #if [[ "$2" =~ ^[1-9][0-9]*$ ]]; then
+      #          ^^[] [] is for number greater then 9 eg 10. 1 in the first block then 0 in the 2nd to create 10 or 100
+      #if [ $2 -lt 4 -o $2 -gt 20]; then
+        error-message "wth are you doing? sides of the dice needs to be between 4 and 20, my silly silly friend"
+        exit 1
+      else
+      sides=$2
+      shift
+    fi
+      #^ consumed so you need to knock off the result go back tothe loop
+    else
+      error-message "you gave me '$2' as a number of side, bad plan broChacho"
+      #send so standard error
+      exit 1
+      #exit with non zero message
+    fi
+    ;;
+        * )
+          error-message "Sorry, Undertand I do not *Yoda Voice* '$1'"
+          help
+          exit 1
+  esac
+ shift
+done
+
+#make sure its not different from command line ******
+# get a valid roll count from the user
+#until [[ $count =~ ^[1-5]$ ]]; do
+#  read -p "How many dice shall I roll[1-5]? " count
+#done
+#
+
+##user input
+until [ $count -gt 0 ]; do
+#until [[ $count =~ ^[1-9][0-9]*$ ]]; do
+  read -p "How many dice shall we roll eh? BALLERRRR? " count
+done
+
+#get valid side count
+#until [[ $sides =~ ^[1-9][0-9]*$ ]]; do
+until [ $sides -gt 3 -a $sides -lt 21 ]; do
+  read -p "How many sides does the die have eh? BALLERRRR?[4-20] " sides
+done
+
+# this will only run the echo message IF sides is greater then 13
+if [[ sides -gt 13 ]]; then
+  #statements
+
+  echo -e "\nah, a Dungeons and Dragon player eh?"
+  echo -e "Good Fortune, roll on, Friend\n"
+fi
+
+
+############  if [ "$sides" -lt 4 -o "$sides" -gt 20 ]; then
+#    echo "$sides must be from 4 to 20" >&2
+#    sides=0
+#  fi
+# *************this is no longer needer because its not in the range
+########## done
+
+
+    #^^ sides=0 so they don't have to start all over, 0 will not pass the  =~ ^[1-9][0-9]*$ ]] so they need to keep going until the loop receives a valid number
+#done
+
+  #this doesnt matter anymore==============================
+# ignore empty guesses
+#  [ -n "$count" ] || continue
+# if they didn't give you a number loop back forever until you get a number
+# guess must have the number 1-5 only
+# ***** Debian bash requires no quotes around regex, others require them! *****
+#  [[ $count =~ ^[1-5]$ ]] && break
+#==============================================================
+#done
+
+###             Main                     ###########################################################################################
+# do the dice roll as many times as the user asked for
+tally=0
+for (( rolls=0 ; rolls < count ; rolls++ )); do
+# roll the dice
+  die1=$(($RANDOM % $sides +1))
+  tally=$(( tally + die1 ))
+# show the roll results
+  echo "Rolled $die1"
+  echo "Your Tally is $tally"
+done
